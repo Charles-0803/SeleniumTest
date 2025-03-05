@@ -29,8 +29,11 @@ jobs:
         key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: maven-${{ runner.os }}
 
+    - name: Verify Maven Installation
+      run: mvn -version
+
     - name: Install Dependencies & Run Selenium Tests
-      run: mvn clean test --batch-mode
+      run: mvn clean test -X --batch-mode
       continue-on-error: false
 
     - name: Upload Test Reports
