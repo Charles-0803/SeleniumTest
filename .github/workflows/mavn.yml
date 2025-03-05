@@ -1,0 +1,44 @@
+name: Selenium Tests CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  selenium-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set Up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Cache Maven Dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: maven-${{ runner.os }}
+
+    - name: Install Dependencies & Run Selenium Tests
+      run: mvn clean test --batch-mode
+      continue-on-error: false
+
+    - name: Upload Test Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: selenium-test-report
+        path: target/allure-reports/*.xml
+
+    - name: Display Test Execution Logs
+      if: always()
+      run: cat target/allure-reports/*.xml || echo "No logs found"
