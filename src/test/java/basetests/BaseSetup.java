@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class BaseSetup {
     private static WebDriver driver;
@@ -22,7 +23,16 @@ public class BaseSetup {
 
     @BeforeAll
     public static void setUp(){
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+
+        // Ensuring Chrome runs in a clean session
+        options.addArguments("--incognito"); // Runs in Incognito mode to prevent user data conflicts
+        options.addArguments("--disable-gpu"); 
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage"); // Helps with limited memory environments
+        options.addArguments("--headless=new"); // Runs in headless mode (newer version)
+
+        driver = new ChromeDriver(options);
         //driver.manage().window().maximize();
         driver.get("https://www.globalsqa.com/angularJs-protractor/BankingProject/#/login");
         homePage = new HomePage(driver);
