@@ -51,4 +51,5 @@ jobs:
       uses: rtCamp/action-slack-notify@v2
       env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_MESSAGE: "✅ Selenium test run completed. Check GitHub Actions logs for details."
