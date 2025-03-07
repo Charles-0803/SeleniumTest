@@ -48,7 +48,7 @@ jobs:
           subject: "GitHub Actions Test Run Results"
           body: "The Selenium test run has completed. Check the logs for details."
     - name: Send Slack Notification
-      uses: rtCamp/action-slack-notify@v3
+      uses: rtCamp/action-slack-notify@v2
       env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
           
