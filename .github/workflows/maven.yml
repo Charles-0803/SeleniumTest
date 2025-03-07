@@ -36,3 +36,14 @@ jobs:
     - name: Run Selenium Tests
       run: mvn test
 
+    - name: Send Email Notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+          server_address: ${{ sercets.SMTP_SERVER }} 
+          server_port: ${{ sercets.SMTP_PORT }} 
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          from: ${{ secrets.SMTP_USERNAME }}
+          to: ${{ secrets.RECIPIENT_EMAIL }}  
+          subject: "GitHub Actions Test Run Results"
+          body: "The Selenium test run has completed. Check the logs for details."
