@@ -48,10 +48,18 @@ jobs:
           subject: "GitHub Actions Test Run Results"
           body: "The Selenium test run has completed. Check the logs for details."
           
-    - name: Slack Notification
-      uses: action-slack-notify@v2
-      env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      with:
-          channel: "#nsp24-quality-assurance"
-          text: "🚀 GitHub Actions Workflow Status: *${{ job.status }}*\n🔗 Check Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+    - name: Send Slack Notification on Success
+      if: success()
+      run: |
+          curl -X POST -H 'Content-type: application/json' --data \
+          '{
+          "text": "✅ *Build Succeeded*: XYZ Bank App pipeline completed successfully! 🎉\n\n*Repository:* `${{ github.repository }}`\n*Branch:* `${{ github.ref_name }}`\n*Triggered by:* `${{ github.actor }}`\n\n➡️ View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Send Slack Notification on Failure
+      if: failure()
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data \
+        '{
+        "text": "❌ *Build Failed*: XYZ Bank App pipeline encountered an error! 🔥\n\n*Repository:* `${{ github.repository }}`\n*Branch:* `${{ github.ref_name }}`\n*Triggered by:* `${{ github.actor }}`\n\n➡️ Check the logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        }' ${{ secrets.SLACK_WEBHOOK_URL }}
