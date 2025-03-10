@@ -53,5 +53,5 @@ jobs:
       env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       with:
-        
+          channel: "#nsp24-quality-assurance"
           text: "🚀 GitHub Actions Workflow Status: *${{ job.status }}*\n🔗 Check Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
