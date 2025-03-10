@@ -49,7 +49,7 @@ jobs:
           body: "The Selenium test run has completed. Check the logs for details."
           
     - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
+      uses: action-slack-notify@v2
       env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       with:
