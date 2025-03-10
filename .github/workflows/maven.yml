@@ -55,6 +55,7 @@ jobs:
                 🧑‍💻 *Triggered by:* `${{ github.actor }}`
                 📅 *Timestamp:* `${{ github.event.head_commit.timestamp }}`
                 ⚡ *Test Status:* `${{ job.status }}`
+                🎯 *Event Type:* `${{ github.event_name }}`
         
                 👉 *View Workflow Logs:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
