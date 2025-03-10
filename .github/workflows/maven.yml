@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           from: ${{ secrets.SMTP_USERNAME }}
-          to: ${{ secrets.RECIPIENT_EMAIL }}, ${{ sercets.RECIPIENT_EMAIL2 }}, ${{ sercets.RECIPIENT_EMAIL3 }}
+          to: ${{ secrets.RECIPIENT_EMAIL }}, ${{ secrets.RECIPIENT_EMAIL2 }}, ${{ secrets.RECIPIENT_EMAIL3 }}
           subject: "GitHub Actions Test Run Results - ${{ job.status }}"
           body: |
                 ✅ *Test Execution Summary*
