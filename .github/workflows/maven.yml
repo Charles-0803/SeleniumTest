@@ -1,0 +1,77 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+    
+  workflow_dispatch:
+jobs:
+  selenium-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Respository
+      uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Build with Maven
+      run: mvn -version
+
+    - name: Run Selenium Tests
+      run: mvn test
+
+    - name: Send Email Notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+          server_address: ${{ secrets.SMTP_SERVER }} 
+          server_port: ${{ secrets.SMTP_PORT }} 
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          from: ${{ secrets.SMTP_USERNAME }}
+          to: ${{ secrets.RECIPIENT_EMAIL }}, ${{ secrets.RECIPIENT_EMAIL2 }}, ${{ secrets.RECIPIENT_EMAIL3 }}
+          subject: "GitHub Actions Test Run Results - ${{ job.status }}"
+          body: |
+                ✅ *Test Execution Summary*
+                ----------------------------------
+                📌 *Repository:* `${{ github.repository }}`
+                🌿 *Branch:* `${{ github.ref_name }}`
+                🏷️ *Commit Message:* `${{ github.event.head_commit.message }}`
+                🧑‍💻 *Triggered by:* `${{ github.actor }}`
+                📅 *Timestamp:* `${{ github.event.head_commit.timestamp }}`
+                ⚡ *Test Status:* `${{ job.status }}`
+                🎯 *Event Type:* `${{ github.event_name }}`
+        
+                👉 *View Workflow Logs:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          
+    - name: Send Slack Notification on Success
+      if: success()
+      run: |
+          curl -X POST -H 'Content-type: application/json' --data \
+          '{
+          "text": "✅ *Build Succeeded*: XYZ Bank App pipeline completed successfully! 🎉\n\n*Repository:* `${{ github.repository }}`\n*Branch:* `${{ github.ref_name }}`\n*Triggered by:* `${{ github.actor }}`\n\n➡️ View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }' ${{ secrets.SLACK_WEBHOOK }}
+
+    - name: Send Slack Notification on Failure
+      if: failure()
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data \
+        '{
+        "text": "❌ *Build Failed*: XYZ Bank App pipeline encountered an error! 🔥\n\n*Repository:* `${{ github.repository }}`\n*Branch:* `${{ github.ref_name }}`\n*Triggered by:* `${{ github.actor }}`\n\n➡️ Check the logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        }' ${{ secrets.SLACK_WEBHOOK }}
